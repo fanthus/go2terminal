@@ -13,6 +13,7 @@ mkdir -p "${BUNDLE_DIR}/Contents/Resources"
 
 cp "${BUILD_DIR}/${APP_NAME}" "${BUNDLE_DIR}/Contents/MacOS/${APP_NAME}"
 cp "Resources/Info.plist" "${BUNDLE_DIR}/Contents/Info.plist"
+cp "Resources/AppIcon.icns" "${BUNDLE_DIR}/Contents/Resources/AppIcon.icns"
 
 echo "APPL????" > "${BUNDLE_DIR}/Contents/PkgInfo"
 
