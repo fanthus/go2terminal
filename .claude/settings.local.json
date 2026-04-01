@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(swift build:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git -C /Users/xiushanfan/Desktop/go2shell status)",
+      "Bash(git -C /Users/xiushanfan/Desktop/go2shell log --oneline -5)",
+      "Bash(git:*)",
+      "Bash(swift test:*)",
+      "Bash(bash /Users/xiushanfan/Desktop/go2shell/scripts/bundle.sh 2>&1)",
+      "Bash(python3:*)",
+      "Bash(iconutil:*)",
+      "Bash(make bundle:*)"
+    ]
+  }
+}
