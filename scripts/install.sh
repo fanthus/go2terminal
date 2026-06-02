@@ -27,6 +27,7 @@ fi
 echo "==> Installing ${APP_NAME}.app..."
 rm -rf "${APP_NAME}.app"
 cp -R "$APP_PATH" "${APP_NAME}.app"
+bash scripts/wrap-launcher.sh "${APP_NAME}.app"
 bash scripts/codesign.sh "${APP_NAME}.app"
 cp -R "${APP_NAME}.app" /Applications/
 

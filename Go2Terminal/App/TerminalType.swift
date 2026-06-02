@@ -4,7 +4,9 @@ enum TerminalType: String, CaseIterable {
     case terminal = "terminal"
     case iTerm2 = "iTerm2"
 
-    private static let userDefaultsKey = "terminalType"
+    static let preferencesKey = "terminalType"
+
+    private static let userDefaultsKey = preferencesKey
 
     var displayName: String {
         switch self {

@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		A10000000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000101 /* AppDelegate.swift */; };
-		A1000000000000000000000A /* Go2TerminalMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000106 /* Go2TerminalMain.swift */; };
+		A1000000000000000000000A /* Go2TerminalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000106 /* Go2TerminalApp.swift */; };
+		A1000000000000000000000B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000107 /* SettingsView.swift */; };
 		A10000000000000000000002 /* FinderPathResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000102 /* FinderPathResolver.swift */; };
 		A10000000000000000000003 /* TerminalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000103 /* TerminalLauncher.swift */; };
 		A10000000000000000000004 /* TerminalType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000104 /* TerminalType.swift */; };
-		A10000000000000000000005 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000105 /* PreferencesWindowController.swift */; };
 		A10000000000000000000006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000203 /* Assets.xcassets */; };
 		A10000000000000000000007 /* TerminalTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000301 /* TerminalTypeTests.swift */; };
 		A10000000000000000000008 /* TerminalLauncherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000302 /* TerminalLauncherTests.swift */; };
@@ -34,8 +34,8 @@
 		A10000000000000000000102 /* FinderPathResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderPathResolver.swift; sourceTree = "<group>"; };
 		A10000000000000000000103 /* TerminalLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLauncher.swift; sourceTree = "<group>"; };
 		A10000000000000000000104 /* TerminalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalType.swift; sourceTree = "<group>"; };
-		A10000000000000000000105 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
-		A10000000000000000000106 /* Go2TerminalMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Go2TerminalMain.swift; sourceTree = "<group>"; };
+		A10000000000000000000106 /* Go2TerminalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Go2TerminalApp.swift; sourceTree = "<group>"; };
+		A10000000000000000000107 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A10000000000000000000201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A10000000000000000000202 /* Go2Terminal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Go2Terminal.entitlements; sourceTree = "<group>"; };
 		A10000000000000000000203 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -104,12 +104,12 @@
 		A10000000000000000000044 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000106 /* Go2TerminalMain.swift */,
+				A10000000000000000000106 /* Go2TerminalApp.swift */,
+				A10000000000000000000107 /* SettingsView.swift */,
 				A10000000000000000000101 /* AppDelegate.swift */,
 				A10000000000000000000102 /* FinderPathResolver.swift */,
 				A10000000000000000000103 /* TerminalLauncher.swift */,
 				A10000000000000000000104 /* TerminalType.swift */,
-				A10000000000000000000105 /* PreferencesWindowController.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -223,12 +223,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1000000000000000000000A /* Go2TerminalMain.swift in Sources */,
+				A1000000000000000000000A /* Go2TerminalApp.swift in Sources */,
+				A1000000000000000000000B /* SettingsView.swift in Sources */,
 				A10000000000000000000001 /* AppDelegate.swift in Sources */,
 				A10000000000000000000002 /* FinderPathResolver.swift in Sources */,
 				A10000000000000000000003 /* TerminalLauncher.swift in Sources */,
 				A10000000000000000000004 /* TerminalType.swift in Sources */,
-				A10000000000000000000005 /* PreferencesWindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,7 +271,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -291,7 +291,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};

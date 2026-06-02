@@ -81,7 +81,7 @@ enum TerminalLauncher {
         alert.addButton(withTitle: "Open Preferences")
         alert.addButton(withTitle: "OK")
         if showAlert(alert) == .alertFirstButtonReturn {
-            NotificationCenter.default.post(name: .openPreferences, object: nil)
+            AppDelegate.requestShowSettings()
         }
     }
 
@@ -93,8 +93,4 @@ enum TerminalLauncher {
         alert.addButton(withTitle: "OK")
         showAlert(alert)
     }
-}
-
-extension Notification.Name {
-    static let openPreferences = Notification.Name("openPreferences")
 }

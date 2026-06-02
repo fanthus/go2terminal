@@ -90,6 +90,7 @@ trap 'rm -rf "$STAGING"' EXIT
 
 echo "==> Signing ${APP_NAME}.app..."
 cp -R "$APP_SRC" "${STAGING}/${APP_NAME}.app"
+bash scripts/wrap-launcher.sh "${STAGING}/${APP_NAME}.app"
 codesign --force --deep --sign "$SIGN_IDENTITY" "${STAGING}/${APP_NAME}.app"
 codesign --verify --verbose=2 "${STAGING}/${APP_NAME}.app"
 

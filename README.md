@@ -8,14 +8,14 @@
 
 - Finder 工具栏一键打开当前目录终端
 - 支持 `Terminal.app` 和 `iTerm2`
-- `Option` + 点击图标打开偏好设置
+- 标准 macOS 设置窗口（Option/Shift + 点击，或 `./scripts/open-settings.sh`）
 - Finder 无窗口时自动回退到用户主目录
 - iTerm2 未安装时给出可操作提示
 - 自动化权限缺失时引导到系统设置
 
 ## 运行环境
 
-- macOS 12+
+- macOS 13+
 - Xcode 15+
 
 ## 快速开始
@@ -44,12 +44,27 @@ open Go2Terminal.xcodeproj
 
 ### 使用
 
-- 普通点击：在当前 Finder 目录打开终端
-- 按住 `Option` 点击：打开偏好设置，切换默认终端（如 iTerm2）
+- **普通点击** 工具栏图标：在当前 Finder 目录打开终端
+- **Option 或 Shift + 点击** 工具栏图标：打开 Go2Terminal 设置（按住修饰键直到点击完成）
+- **命令行打开设置**：
+
+```bash
+./scripts/open-settings.sh
+# 或
+open -a Go2Terminal --args --settings
+```
+
+> 安装脚本会在应用入口加入启动包装层，在进程启动前检测 Option/Shift，以支持 Finder 工具栏的修饰键点击。
+>
+> 若无法删除或覆盖应用（提示「已打开」），先退出进程：
+>
+> ```bash
+> ./scripts/quit.sh
+> ```
 
 ## 权限说明
 
-Go2Terminal 依赖 AppleScript 控制 Finder 与终端应用，首次使用可能触发 Automation 权限请求。
+Go2Terminal 需要读取 Finder 当前目录，首次使用可能触发 Automation 权限请求。
 
 如被拒绝，可在以下位置开启：
 
@@ -81,11 +96,12 @@ rm -rf .build/xcode Go2Terminal.app dist
 ├── Go2Terminal.xcodeproj       # Xcode 工程
 ├── Go2Terminal/
 │   ├── App/                    # 应用源码
+│   │   ├── Go2TerminalApp.swift
+│   │   ├── SettingsView.swift
 │   │   ├── AppDelegate.swift
 │   │   ├── FinderPathResolver.swift
 │   │   ├── TerminalLauncher.swift
-│   │   ├── TerminalType.swift
-│   │   └── PreferencesWindowController.swift
+│   │   └── TerminalType.swift
 │   └── Resources/
 │       ├── Info.plist
 │       ├── Go2Terminal.entitlements
@@ -100,10 +116,10 @@ rm -rf .build/xcode Go2Terminal.app dist
 ## 设计要点
 
 - Finder 当前路径解析：`FinderPathResolver`
-- 终端启动与脚本拼接：`TerminalLauncher`
-- 终端偏好持久化：`TerminalType` + `UserDefaults`
+- 终端启动：`TerminalLauncher`（`open -a`）
+- 终端偏好持久化：`TerminalType` + `@AppStorage`
+- 标准设置界面：SwiftUI `Settings` scene
 - 无 Dock 图标的轻量工具体验：`LSUIElement`
-- Apple Events 权限：`Go2Terminal.entitlements`
 
 ## License
 
