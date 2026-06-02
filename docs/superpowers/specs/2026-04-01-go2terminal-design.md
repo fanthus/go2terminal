@@ -1,8 +1,8 @@
-# Go2Shell Design Spec
+# Go2Terminal Design Spec
 
 ## Overview
 
-Go2Shell is a macOS utility app that sits in the Finder toolbar. When clicked, it opens a new terminal window at the current Finder directory. It supports both Terminal.app and iTerm2, with a preferences window for configuration.
+Go2Terminal is a macOS utility app that sits in the Finder toolbar. When clicked, it opens a new terminal window at the current Finder directory. It supports both Terminal.app and iTerm2, with a preferences window for configuration.
 
 ## Requirements
 
@@ -17,7 +17,7 @@ Go2Shell is a macOS utility app that sits in the Finder toolbar. When clicked, i
 ## Architecture
 
 ```
-Go2Shell.app
+Go2Terminal.app
 ├── AppDelegate.swift          # App entry, handles toolbar click
 ├── PreferencesWindow.swift    # Preferences window (terminal selection)
 ├── FinderPathResolver.swift   # Get current Finder window path via AppleScript
@@ -118,6 +118,6 @@ User clicks Finder toolbar icon
 
 ## Build & Installation
 
-1. Build the Xcode project to produce `Go2Shell.app`
-2. User holds Command key and drags `Go2Shell.app` to the Finder toolbar
+1. Build the Xcode project to produce `Go2Terminal.app`
+2. User holds Command key and drags `Go2Terminal.app` to the Finder toolbar
 3. Click to use

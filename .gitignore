@@ -1,3 +1,6 @@
 .build/
-Go2Shell.app/
-.swiftpm/
+Go2Terminal.app/
+dist/
+*.iconset
+.DS_Store
+xcuserdata/

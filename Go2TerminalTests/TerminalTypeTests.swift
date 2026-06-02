@@ -1,5 +1,5 @@
 import XCTest
-@testable import Go2ShellLib
+@testable import Go2Terminal
 
 final class TerminalTypeTests: XCTestCase {
     override func setUp() {

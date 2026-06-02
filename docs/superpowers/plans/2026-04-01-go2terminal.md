@@ -1,4 +1,4 @@
-# Go2Shell Implementation Plan
+# Go2Terminal Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -13,19 +13,19 @@
 ## File Structure
 
 ```
-Go2Shell/
-├── Package.swift                          # SPM manifest: Go2ShellLib, Go2Shell, Go2ShellTests
+Go2Terminal/
+├── Package.swift                          # SPM manifest: Go2TerminalLib, Go2Terminal, Go2TerminalTests
 ├── Sources/
-│   ├── Go2Shell/
+│   ├── Go2Terminal/
 │   │   └── main.swift                     # Entry point: launches NSApplication
-│   └── Go2ShellLib/
+│   └── Go2TerminalLib/
 │       ├── AppDelegate.swift              # NSApplicationDelegate, Option key detection
 │       ├── TerminalType.swift             # Enum: terminal/iTerm2, UserDefaults read/write
 │       ├── FinderPathResolver.swift       # AppleScript generation + execution for Finder path
 │       ├── TerminalLauncher.swift         # AppleScript generation + execution to open terminal
 │       └── PreferencesWindowController.swift  # NSWindowController with terminal dropdown
 ├── Tests/
-│   └── Go2ShellTests/
+│   └── Go2TerminalTests/
 │       ├── TerminalTypeTests.swift        # TerminalType enum + preferences tests
 │       ├── FinderPathResolverTests.swift  # AppleScript string generation tests
 │       └── TerminalLauncherTests.swift    # AppleScript string generation tests
@@ -42,8 +42,8 @@ Go2Shell/
 
 **Files:**
 - Create: `Package.swift`
-- Create: `Sources/Go2Shell/main.swift`
-- Create: `Sources/Go2ShellLib/AppDelegate.swift` (placeholder)
+- Create: `Sources/Go2Terminal/main.swift`
+- Create: `Sources/Go2TerminalLib/AppDelegate.swift` (placeholder)
 - Create: `Makefile`
 
 - [ ] **Step 1: Create Package.swift**
@@ -53,22 +53,22 @@ Go2Shell/
 import PackageDescription
 
 let package = Package(
-    name: "Go2Shell",
+    name: "Go2Terminal",
     platforms: [.macOS(.v12)],
     targets: [
         .target(
-            name: "Go2ShellLib",
-            path: "Sources/Go2ShellLib"
+            name: "Go2TerminalLib",
+            path: "Sources/Go2TerminalLib"
         ),
         .executableTarget(
-            name: "Go2Shell",
-            dependencies: ["Go2ShellLib"],
-            path: "Sources/Go2Shell"
+            name: "Go2Terminal",
+            dependencies: ["Go2TerminalLib"],
+            path: "Sources/Go2Terminal"
         ),
         .testTarget(
-            name: "Go2ShellTests",
-            dependencies: ["Go2ShellLib"],
-            path: "Tests/Go2ShellTests"
+            name: "Go2TerminalTests",
+            dependencies: ["Go2TerminalLib"],
+            path: "Tests/Go2TerminalTests"
         ),
     ]
 )
@@ -76,11 +76,11 @@ let package = Package(
 
 - [ ] **Step 2: Create minimal main.swift**
 
-File: `Sources/Go2Shell/main.swift`
+File: `Sources/Go2Terminal/main.swift`
 
 ```swift
 import AppKit
-import Go2ShellLib
+import Go2TerminalLib
 
 let app = NSApplication.shared
 let delegate = AppDelegate()
@@ -90,7 +90,7 @@ app.run()
 
 - [ ] **Step 3: Create placeholder AppDelegate**
 
-File: `Sources/Go2ShellLib/AppDelegate.swift`
+File: `Sources/Go2TerminalLib/AppDelegate.swift`
 
 ```swift
 import AppKit
@@ -122,12 +122,12 @@ bundle: build
 
 clean:
 	swift package clean
-	rm -rf Go2Shell.app
+	rm -rf Go2Terminal.app
 ```
 
 - [ ] **Step 5: Verify build**
 
-Run: `cd /Users/xiushanfan/Desktop/go2shell && swift build`
+Run: `cd /Users/fanthus/Documents/fanthus/go2terminal && swift build`
 Expected: Build succeeds with no errors.
 
 - [ ] **Step 6: Commit**
@@ -142,16 +142,16 @@ git commit -m "feat: project scaffolding with SPM"
 ### Task 2: TerminalType Enum and Preferences
 
 **Files:**
-- Create: `Sources/Go2ShellLib/TerminalType.swift`
-- Create: `Tests/Go2ShellTests/TerminalTypeTests.swift`
+- Create: `Sources/Go2TerminalLib/TerminalType.swift`
+- Create: `Tests/Go2TerminalTests/TerminalTypeTests.swift`
 
 - [ ] **Step 1: Write failing tests**
 
-File: `Tests/Go2ShellTests/TerminalTypeTests.swift`
+File: `Tests/Go2TerminalTests/TerminalTypeTests.swift`
 
 ```swift
 import XCTest
-@testable import Go2ShellLib
+@testable import Go2TerminalLib
 
 final class TerminalTypeTests: XCTestCase {
     override func setUp() {
@@ -198,7 +198,7 @@ Expected: Compilation error — `TerminalType` not defined.
 
 - [ ] **Step 3: Implement TerminalType**
 
-File: `Sources/Go2ShellLib/TerminalType.swift`
+File: `Sources/Go2TerminalLib/TerminalType.swift`
 
 ```swift
 import Foundation
@@ -245,7 +245,7 @@ Expected: All 6 tests pass.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add Sources/Go2ShellLib/TerminalType.swift Tests/Go2ShellTests/TerminalTypeTests.swift
+git add Sources/Go2TerminalLib/TerminalType.swift Tests/Go2TerminalTests/TerminalTypeTests.swift
 git commit -m "feat: add TerminalType enum with UserDefaults persistence"
 ```
 
@@ -254,16 +254,16 @@ git commit -m "feat: add TerminalType enum with UserDefaults persistence"
 ### Task 3: FinderPathResolver
 
 **Files:**
-- Create: `Sources/Go2ShellLib/FinderPathResolver.swift`
-- Create: `Tests/Go2ShellTests/FinderPathResolverTests.swift`
+- Create: `Sources/Go2TerminalLib/FinderPathResolver.swift`
+- Create: `Tests/Go2TerminalTests/FinderPathResolverTests.swift`
 
 - [ ] **Step 1: Write failing tests for script generation**
 
-File: `Tests/Go2ShellTests/FinderPathResolverTests.swift`
+File: `Tests/Go2TerminalTests/FinderPathResolverTests.swift`
 
 ```swift
 import XCTest
-@testable import Go2ShellLib
+@testable import Go2TerminalLib
 
 final class FinderPathResolverTests: XCTestCase {
     func testAppleScriptSource() {
@@ -283,7 +283,7 @@ Expected: Compilation error — `FinderPathResolver` not defined.
 
 - [ ] **Step 3: Implement FinderPathResolver**
 
-File: `Sources/Go2ShellLib/FinderPathResolver.swift`
+File: `Sources/Go2TerminalLib/FinderPathResolver.swift`
 
 ```swift
 import Foundation
@@ -322,7 +322,7 @@ Expected: All tests pass.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add Sources/Go2ShellLib/FinderPathResolver.swift Tests/Go2ShellTests/FinderPathResolverTests.swift
+git add Sources/Go2TerminalLib/FinderPathResolver.swift Tests/Go2TerminalTests/FinderPathResolverTests.swift
 git commit -m "feat: add FinderPathResolver with AppleScript Finder path query"
 ```
 
@@ -331,16 +331,16 @@ git commit -m "feat: add FinderPathResolver with AppleScript Finder path query"
 ### Task 4: TerminalLauncher
 
 **Files:**
-- Create: `Sources/Go2ShellLib/TerminalLauncher.swift`
-- Create: `Tests/Go2ShellTests/TerminalLauncherTests.swift`
+- Create: `Sources/Go2TerminalLib/TerminalLauncher.swift`
+- Create: `Tests/Go2TerminalTests/TerminalLauncherTests.swift`
 
 - [ ] **Step 1: Write failing tests for script generation**
 
-File: `Tests/Go2ShellTests/TerminalLauncherTests.swift`
+File: `Tests/Go2TerminalTests/TerminalLauncherTests.swift`
 
 ```swift
 import XCTest
-@testable import Go2ShellLib
+@testable import Go2TerminalLib
 
 final class TerminalLauncherTests: XCTestCase {
     func testTerminalAppScript() {
@@ -382,7 +382,7 @@ Expected: Compilation error — `TerminalLauncher` not defined.
 
 - [ ] **Step 3: Implement TerminalLauncher**
 
-File: `Sources/Go2ShellLib/TerminalLauncher.swift`
+File: `Sources/Go2TerminalLib/TerminalLauncher.swift`
 
 ```swift
 import AppKit
@@ -451,7 +451,7 @@ public enum TerminalLauncher {
     private static func showPermissionDeniedAlert() {
         let alert = NSAlert()
         alert.messageText = "Permission Required"
-        alert.informativeText = "Go2Shell needs Automation permission. Please enable it in System Settings → Privacy & Security → Automation."
+        alert.informativeText = "Go2Terminal needs Automation permission. Please enable it in System Settings → Privacy & Security → Automation."
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Open System Settings")
         alert.addButton(withTitle: "OK")
@@ -474,7 +474,7 @@ Expected: All 5 tests pass.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add Sources/Go2ShellLib/TerminalLauncher.swift Tests/Go2ShellTests/TerminalLauncherTests.swift
+git add Sources/Go2TerminalLib/TerminalLauncher.swift Tests/Go2TerminalTests/TerminalLauncherTests.swift
 git commit -m "feat: add TerminalLauncher with Terminal.app and iTerm2 support"
 ```
 
@@ -483,11 +483,11 @@ git commit -m "feat: add TerminalLauncher with Terminal.app and iTerm2 support"
 ### Task 5: PreferencesWindowController
 
 **Files:**
-- Create: `Sources/Go2ShellLib/PreferencesWindowController.swift`
+- Create: `Sources/Go2TerminalLib/PreferencesWindowController.swift`
 
 - [ ] **Step 1: Implement PreferencesWindowController**
 
-File: `Sources/Go2ShellLib/PreferencesWindowController.swift`
+File: `Sources/Go2TerminalLib/PreferencesWindowController.swift`
 
 ```swift
 import AppKit
@@ -502,7 +502,7 @@ public class PreferencesWindowController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "Go2Shell Preferences"
+        window.title = "Go2Terminal Preferences"
         window.center()
         super.init(window: window)
         setupUI()
@@ -553,7 +553,7 @@ Expected: Build succeeds.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Sources/Go2ShellLib/PreferencesWindowController.swift
+git add Sources/Go2TerminalLib/PreferencesWindowController.swift
 git commit -m "feat: add preferences window with terminal selection"
 ```
 
@@ -562,11 +562,11 @@ git commit -m "feat: add preferences window with terminal selection"
 ### Task 6: AppDelegate — Wire Everything Together
 
 **Files:**
-- Modify: `Sources/Go2ShellLib/AppDelegate.swift`
+- Modify: `Sources/Go2TerminalLib/AppDelegate.swift`
 
 - [ ] **Step 1: Implement full AppDelegate**
 
-File: `Sources/Go2ShellLib/AppDelegate.swift` (replace entire content)
+File: `Sources/Go2TerminalLib/AppDelegate.swift` (replace entire content)
 
 ```swift
 import AppKit
@@ -621,7 +621,7 @@ Expected: Build succeeds.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Sources/Go2ShellLib/AppDelegate.swift
+git add Sources/Go2TerminalLib/AppDelegate.swift
 git commit -m "feat: wire AppDelegate with Option key detection and main flow"
 ```
 
@@ -643,11 +643,11 @@ File: `Resources/Info.plist`
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>Go2Shell</string>
+    <string>Go2Terminal</string>
     <key>CFBundleDisplayName</key>
-    <string>Go2Shell</string>
+    <string>Go2Terminal</string>
     <key>CFBundleIdentifier</key>
-    <string>com.go2shell.app</string>
+    <string>com.go2terminal.app</string>
     <key>CFBundleVersion</key>
     <string>1.0.0</string>
     <key>CFBundleShortVersionString</key>
@@ -655,13 +655,13 @@ File: `Resources/Info.plist`
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleExecutable</key>
-    <string>Go2Shell</string>
+    <string>Go2Terminal</string>
     <key>LSMinimumSystemVersion</key>
     <string>12.0</string>
     <key>LSUIElement</key>
     <true/>
     <key>NSAppleEventsUsageDescription</key>
-    <string>Go2Shell needs permission to control Finder and your terminal to open a terminal window at the current directory.</string>
+    <string>Go2Terminal needs permission to control Finder and your terminal to open a terminal window at the current directory.</string>
 </dict>
 </plist>
 ```
@@ -674,7 +674,7 @@ File: `scripts/bundle.sh`
 #!/bin/bash
 set -euo pipefail
 
-APP_NAME="Go2Shell"
+APP_NAME="Go2Terminal"
 BUILD_DIR=".build/release"
 BUNDLE_DIR="${APP_NAME}.app"
 
@@ -700,17 +700,17 @@ Run:
 chmod +x scripts/bundle.sh
 swift build -c release && bash scripts/bundle.sh
 ```
-Expected: `Go2Shell.app` directory created with correct structure.
+Expected: `Go2Terminal.app` directory created with correct structure.
 
 - [ ] **Step 4: Verify app bundle structure**
 
-Run: `ls -R Go2Shell.app/`
+Run: `ls -R Go2Terminal.app/`
 Expected:
 ```
 Contents/
 Contents/Info.plist
 Contents/MacOS/
-Contents/MacOS/Go2Shell
+Contents/MacOS/Go2Terminal
 Contents/PkgInfo
 Contents/Resources/
 ```
@@ -734,21 +734,21 @@ Expected: All tests pass.
 - [ ] **Step 2: Build release and bundle**
 
 Run: `make bundle`
-Expected: `Go2Shell.app` created successfully.
+Expected: `Go2Terminal.app` created successfully.
 
 - [ ] **Step 3: Verify app launches**
 
-Run: `open Go2Shell.app`
+Run: `open Go2Terminal.app`
 Expected: App launches, gets Finder path, opens Terminal window at that directory, then exits.
 
 - [ ] **Step 4: Verify preferences (Option key)**
 
-Manually hold Option key and click Go2Shell.app in Finder toolbar.
+Manually hold Option key and click Go2Terminal.app in Finder toolbar.
 Expected: Preferences window opens with terminal dropdown.
 
 - [ ] **Step 5: Final commit**
 
 ```bash
 git add -A
-git commit -m "feat: Go2Shell v1.0.0 — Finder toolbar terminal launcher"
+git commit -m "feat: Go2Terminal v1.0.0 — Finder toolbar terminal launcher"
 ```

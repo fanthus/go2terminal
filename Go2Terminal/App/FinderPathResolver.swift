@@ -1,6 +1,6 @@
 import Foundation
 
-public enum FinderPathResolver {
+enum FinderPathResolver {
     static let appleScriptSource = """
         tell application "Finder"
             if (count of Finder windows) > 0 then
@@ -11,7 +11,7 @@ public enum FinderPathResolver {
         end tell
         """
 
-    public static func resolve() -> String {
+    static func resolve() -> String {
         let script = NSAppleScript(source: appleScriptSource)
         var error: NSDictionary?
         let result = script?.executeAndReturnError(&error)

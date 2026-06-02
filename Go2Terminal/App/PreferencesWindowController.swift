@@ -1,16 +1,16 @@
 import AppKit
 
-public class PreferencesWindowController: NSWindowController {
+class PreferencesWindowController: NSWindowController {
     private var terminalPopUp: NSPopUpButton!
 
-    public init() {
+    init() {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 320, height: 120),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
-        window.title = "Go2Shell Preferences"
+        window.title = "Go2Terminal Preferences"
         window.center()
         super.init(window: window)
         setupUI()

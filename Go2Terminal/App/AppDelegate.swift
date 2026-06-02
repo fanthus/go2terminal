@@ -1,13 +1,10 @@
 import AppKit
 
-public class AppDelegate: NSObject, NSApplicationDelegate {
+@main
+class AppDelegate: NSObject, NSApplicationDelegate {
     private var preferencesController: PreferencesWindowController?
 
-    public override init() {
-        super.init()
-    }
-
-    public func applicationDidFinishLaunching(_ notification: Notification) {
+    func applicationDidFinishLaunching(_ notification: Notification) {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(showPreferences),

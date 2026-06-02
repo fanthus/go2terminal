@@ -1,7 +1,7 @@
 import AppKit
 
-public enum TerminalLauncher {
-    public static func appleScriptSource(for terminal: TerminalType, path: String) -> String {
+enum TerminalLauncher {
+    static func appleScriptSource(for terminal: TerminalType, path: String) -> String {
         let escapedPath = path.replacingOccurrences(of: "'", with: "'\\''")
         switch terminal {
         case .terminal:
@@ -24,12 +24,12 @@ public enum TerminalLauncher {
         }
     }
 
-    public static func isAppInstalled(_ appName: String) -> Bool {
+    static func isAppInstalled(_ appName: String) -> Bool {
         let path = "/Applications/\(appName).app"
         return FileManager.default.fileExists(atPath: path)
     }
 
-    public static func launch(terminal: TerminalType, path: String) -> Bool {
+    static func launch(terminal: TerminalType, path: String) -> Bool {
         if terminal == .iTerm2 && !isAppInstalled("iTerm") {
             showITermNotInstalledAlert()
             return false
@@ -64,7 +64,7 @@ public enum TerminalLauncher {
     private static func showPermissionDeniedAlert() {
         let alert = NSAlert()
         alert.messageText = "Permission Required"
-        alert.informativeText = "Go2Shell needs Automation permission. Please enable it in System Settings → Privacy & Security → Automation."
+        alert.informativeText = "Go2Terminal needs Automation permission. Please enable it in System Settings → Privacy & Security → Automation."
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Open System Settings")
         alert.addButton(withTitle: "OK")
@@ -74,6 +74,6 @@ public enum TerminalLauncher {
     }
 }
 
-public extension Notification.Name {
+extension Notification.Name {
     static let openPreferences = Notification.Name("openPreferences")
 }
