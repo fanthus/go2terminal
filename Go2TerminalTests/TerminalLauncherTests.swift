@@ -2,32 +2,33 @@ import XCTest
 @testable import Go2Terminal
 
 final class TerminalLauncherTests: XCTestCase {
-    func testTerminalAppScript() {
-        let script = TerminalLauncher.appleScriptSource(for: .terminal, path: "/Users/test/Documents")
-        XCTAssertTrue(script.contains("tell application \"Terminal\""))
-        XCTAssertTrue(script.contains("activate"))
-        XCTAssertTrue(script.contains("do script \"cd '/Users/test/Documents'\""))
+    func testTerminalApplicationPath() {
+        let url = TerminalLauncher.applicationURL(for: .terminal)
+        XCTAssertEqual(url.lastPathComponent, "Terminal.app")
+        XCTAssertEqual(TerminalLauncher.applicationName(for: .terminal), "Terminal")
     }
 
-    func testITermScript() {
-        let script = TerminalLauncher.appleScriptSource(for: .iTerm2, path: "/Users/test/Documents")
-        XCTAssertTrue(script.contains("tell application \"iTerm\""))
-        XCTAssertTrue(script.contains("activate"))
-        XCTAssertTrue(script.contains("create window with default profile"))
-        XCTAssertTrue(script.contains("write text \"cd '/Users/test/Documents'\""))
+    func testITermApplicationPath() {
+        let url = TerminalLauncher.applicationURL(for: .iTerm2)
+        XCTAssertEqual(url.lastPathComponent, "iTerm.app")
+        XCTAssertEqual(TerminalLauncher.applicationName(for: .iTerm2), "iTerm")
     }
 
-    func testPathWithSpaces() {
-        let script = TerminalLauncher.appleScriptSource(for: .terminal, path: "/Users/test/My Documents")
-        XCTAssertTrue(script.contains("cd '/Users/test/My Documents'"))
+    func testValidatedDirectoryURLUsesExistingPath() throws {
+        let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: tempDir) }
+
+        let url = TerminalLauncher.validatedDirectoryURL(for: tempDir.path)
+        XCTAssertEqual(url.path, tempDir.path)
     }
 
-    func testPathWithSingleQuote() {
-        let script = TerminalLauncher.appleScriptSource(for: .terminal, path: "/Users/test/it's a dir")
-        XCTAssertTrue(script.contains("cd '/Users/test/it'\\''s a dir'"))
+    func testValidatedDirectoryURLFallsBackToHomeForMissingPath() {
+        let url = TerminalLauncher.validatedDirectoryURL(for: "/path/that/does/not/exist/\(UUID().uuidString)")
+        XCTAssertEqual(url.path, NSHomeDirectory())
     }
 
-    func testITermNotInstalledError() {
+    func testITermNotInstalledCheck() {
         let result = TerminalLauncher.isAppInstalled("SomeNonExistentApp12345")
         XCTAssertFalse(result)
     }

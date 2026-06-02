@@ -1,32 +1,42 @@
 import AppKit
 
 enum TerminalLauncher {
-    static func appleScriptSource(for terminal: TerminalType, path: String) -> String {
-        let escapedPath = path.replacingOccurrences(of: "'", with: "'\\''")
+    static func applicationName(for terminal: TerminalType) -> String {
         switch terminal {
-        case .terminal:
-            return """
-                tell application "Terminal"
-                    activate
-                    do script "cd '\(escapedPath)'"
-                end tell
-                """
-        case .iTerm2:
-            return """
-                tell application "iTerm"
-                    activate
-                    create window with default profile
-                    tell current session of current window
-                        write text "cd '\(escapedPath)'"
-                    end tell
-                end tell
-                """
+        case .terminal: return "Terminal"
+        case .iTerm2: return "iTerm"
         }
     }
 
+    static func applicationURL(for terminal: TerminalType) -> URL {
+        switch terminal {
+        case .terminal:
+            return URL(fileURLWithPath: "/System/Applications/Utilities/Terminal.app")
+        case .iTerm2:
+            return URL(fileURLWithPath: "/Applications/iTerm.app")
+        }
+    }
+
+    static func validatedDirectoryURL(for path: String) -> URL {
+        var isDirectory: ObjCBool = false
+        if FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory), isDirectory.boolValue {
+            return URL(fileURLWithPath: path, isDirectory: true)
+        }
+        return URL(fileURLWithPath: NSHomeDirectory(), isDirectory: true)
+    }
+
     static func isAppInstalled(_ appName: String) -> Bool {
-        let path = "/Applications/\(appName).app"
-        return FileManager.default.fileExists(atPath: path)
+        let paths = [
+            "/Applications/\(appName).app",
+            NSHomeDirectory() + "/Applications/\(appName).app",
+        ]
+        if paths.contains(where: { FileManager.default.fileExists(atPath: $0) }) {
+            return true
+        }
+        if appName == "iTerm" {
+            return NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.googlecode.iterm2") != nil
+        }
+        return false
     }
 
     static func launch(terminal: TerminalType, path: String) -> Bool {
@@ -35,18 +45,32 @@ enum TerminalLauncher {
             return false
         }
 
-        let source = appleScriptSource(for: terminal, path: path)
-        let script = NSAppleScript(source: source)
-        var error: NSDictionary?
-        script?.executeAndReturnError(&error)
+        let directoryURL = validatedDirectoryURL(for: path)
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        process.arguments = ["-a", applicationName(for: terminal), directoryURL.path]
 
-        if let error = error {
-            NSLog("TerminalLauncher error: %@", error)
-            showPermissionDeniedAlert()
+        do {
+            try process.run()
+            process.waitUntilExit()
+        } catch {
+            NSLog("TerminalLauncher error: %@", error.localizedDescription)
+            showLaunchFailedAlert()
+            return false
+        }
+
+        if process.terminationStatus != 0 {
+            NSLog("TerminalLauncher error: open exited with status %d for path %@", process.terminationStatus, directoryURL.path)
+            showLaunchFailedAlert()
             return false
         }
 
         return true
+    }
+
+    private static func showAlert(_ alert: NSAlert) -> NSApplication.ModalResponse {
+        NSApp.activate(ignoringOtherApps: true)
+        return alert.runModal()
     }
 
     private static func showITermNotInstalledAlert() {
@@ -56,21 +80,18 @@ enum TerminalLauncher {
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Open Preferences")
         alert.addButton(withTitle: "OK")
-        if alert.runModal() == .alertFirstButtonReturn {
+        if showAlert(alert) == .alertFirstButtonReturn {
             NotificationCenter.default.post(name: .openPreferences, object: nil)
         }
     }
 
-    private static func showPermissionDeniedAlert() {
+    private static func showLaunchFailedAlert() {
         let alert = NSAlert()
-        alert.messageText = "Permission Required"
-        alert.informativeText = "Go2Terminal needs Automation permission. Please enable it in System Settings → Privacy & Security → Automation."
+        alert.messageText = "Unable to Open Terminal"
+        alert.informativeText = "Go2Terminal could not open the selected terminal application."
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "Open System Settings")
         alert.addButton(withTitle: "OK")
-        if alert.runModal() == .alertFirstButtonReturn {
-            NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation")!)
-        }
+        showAlert(alert)
     }
 }
 

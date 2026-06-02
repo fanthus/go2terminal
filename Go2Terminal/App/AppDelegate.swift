@@ -1,6 +1,5 @@
 import AppKit
 
-@main
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var preferencesController: PreferencesWindowController?
 
@@ -12,20 +11,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
 
+        handleActivation()
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        handleActivation()
+        return true
+    }
+
+    private func handleActivation() {
         if NSEvent.modifierFlags.contains(.option) {
             showPreferences()
-        } else {
-            openTerminalAtFinderPath()
+            return
+        }
+
+        performTerminalLaunch()
+    }
+
+    private func performTerminalLaunch() {
+        let success = openTerminalAtFinderPath()
+        if success {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 NSApp.terminate(nil)
             }
+        } else {
+            NSApp.terminate(nil)
         }
     }
 
-    private func openTerminalAtFinderPath() {
+    private func openTerminalAtFinderPath() -> Bool {
         let path = FinderPathResolver.resolve()
         let terminal = TerminalType.preferred
-        _ = TerminalLauncher.launch(terminal: terminal, path: path)
+        return TerminalLauncher.launch(terminal: terminal, path: path)
     }
 
     @objc private func showPreferences() {

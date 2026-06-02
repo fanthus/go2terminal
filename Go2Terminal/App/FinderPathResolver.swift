@@ -11,16 +11,50 @@ enum FinderPathResolver {
         end tell
         """
 
-    static func resolve() -> String {
-        let script = NSAppleScript(source: appleScriptSource)
-        var error: NSDictionary?
-        let result = script?.executeAndReturnError(&error)
+    private static let timeoutSeconds: TimeInterval = 0.5
 
-        if let error = error {
-            NSLog("FinderPathResolver error: %@", error)
+    static func resolve() -> String {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+        process.arguments = ["-e", appleScriptSource]
+
+        let outputPipe = Pipe()
+        process.standardOutput = outputPipe
+        process.standardError = Pipe()
+
+        do {
+            try process.run()
+        } catch {
+            NSLog("FinderPathResolver error: %@", error.localizedDescription)
             return NSHomeDirectory()
         }
 
-        return result?.stringValue ?? NSHomeDirectory()
+        let group = DispatchGroup()
+        group.enter()
+        DispatchQueue.global(qos: .userInitiated).async {
+            process.waitUntilExit()
+            group.leave()
+        }
+
+        if group.wait(timeout: .now() + timeoutSeconds) == .timedOut {
+            process.terminate()
+            NSLog("FinderPathResolver timed out; falling back to home directory")
+            return NSHomeDirectory()
+        }
+
+        guard process.terminationStatus == 0 else {
+            NSLog("FinderPathResolver exited with status %d", process.terminationStatus)
+            return NSHomeDirectory()
+        }
+
+        let data = outputPipe.fileHandleForReading.readDataToEndOfFile()
+        let path = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard let path, !path.isEmpty else {
+            return NSHomeDirectory()
+        }
+
+        return path
     }
 }

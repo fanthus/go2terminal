@@ -1,6 +1,6 @@
 import AppKit
 
-class PreferencesWindowController: NSWindowController {
+class PreferencesWindowController: NSWindowController, NSWindowDelegate {
     private var terminalPopUp: NSPopUpButton!
 
     init() {
@@ -13,6 +13,7 @@ class PreferencesWindowController: NSWindowController {
         window.title = "Go2Terminal Preferences"
         window.center()
         super.init(window: window)
+        window.delegate = self
         setupUI()
         loadPreferences()
     }
@@ -49,5 +50,9 @@ class PreferencesWindowController: NSWindowController {
             return
         }
         type.saveAsPreferred()
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        NSApp.terminate(nil)
     }
 }
