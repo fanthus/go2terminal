@@ -5,6 +5,7 @@ enum TerminalLauncher {
         switch terminal {
         case .terminal: return "Terminal"
         case .iTerm2: return "iTerm"
+        case .ghostty: return "Ghostty"
         }
     }
 
@@ -14,6 +15,8 @@ enum TerminalLauncher {
             return URL(fileURLWithPath: "/System/Applications/Utilities/Terminal.app")
         case .iTerm2:
             return URL(fileURLWithPath: "/Applications/iTerm.app")
+        case .ghostty:
+            return URL(fileURLWithPath: "/Applications/Ghostty.app")
         }
     }
 
@@ -36,12 +39,19 @@ enum TerminalLauncher {
         if appName == "iTerm" {
             return NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.googlecode.iterm2") != nil
         }
+        if appName == "Ghostty" {
+            return NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.mitchellh.ghostty") != nil
+        }
         return false
     }
 
     static func launch(terminal: TerminalType, path: String) -> Bool {
         if terminal == .iTerm2 && !isAppInstalled("iTerm") {
-            showITermNotInstalledAlert()
+            showTerminalNotInstalledAlert(name: "iTerm2", installHint: "install iTerm2")
+            return false
+        }
+        if terminal == .ghostty && !isAppInstalled("Ghostty") {
+            showTerminalNotInstalledAlert(name: "Ghostty", installHint: "install Ghostty")
             return false
         }
 
@@ -73,10 +83,10 @@ enum TerminalLauncher {
         return alert.runModal()
     }
 
-    private static func showITermNotInstalledAlert() {
+    private static func showTerminalNotInstalledAlert(name: String, installHint: String) {
         let alert = NSAlert()
-        alert.messageText = "iTerm2 Not Found"
-        alert.informativeText = "iTerm2 is not installed. Please switch to Terminal in preferences, or install iTerm2."
+        alert.messageText = "\(name) Not Found"
+        alert.informativeText = "\(name) is not installed. Please switch to Terminal in preferences, or \(installHint)."
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Open Preferences")
         alert.addButton(withTitle: "OK")

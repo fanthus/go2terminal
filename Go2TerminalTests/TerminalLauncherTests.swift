@@ -14,6 +14,12 @@ final class TerminalLauncherTests: XCTestCase {
         XCTAssertEqual(TerminalLauncher.applicationName(for: .iTerm2), "iTerm")
     }
 
+    func testGhosttyApplicationPath() {
+        let url = TerminalLauncher.applicationURL(for: .ghostty)
+        XCTAssertEqual(url.lastPathComponent, "Ghostty.app")
+        XCTAssertEqual(TerminalLauncher.applicationName(for: .ghostty), "Ghostty")
+    }
+
     func testValidatedDirectoryURLUsesExistingPath() throws {
         let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)

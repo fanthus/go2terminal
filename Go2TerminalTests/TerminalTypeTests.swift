@@ -22,18 +22,26 @@ final class TerminalTypeTests: XCTestCase {
         XCTAssertEqual(TerminalType.preferred, .iTerm2)
     }
 
+    func testSaveAndLoadGhostty() {
+        TerminalType.ghostty.saveAsPreferred()
+        XCTAssertEqual(TerminalType.preferred, .ghostty)
+    }
+
     func testRawValues() {
         XCTAssertEqual(TerminalType.terminal.rawValue, "terminal")
         XCTAssertEqual(TerminalType.iTerm2.rawValue, "iTerm2")
+        XCTAssertEqual(TerminalType.ghostty.rawValue, "ghostty")
     }
 
     func testDisplayName() {
         XCTAssertEqual(TerminalType.terminal.displayName, "Terminal")
         XCTAssertEqual(TerminalType.iTerm2.displayName, "iTerm2")
+        XCTAssertEqual(TerminalType.ghostty.displayName, "Ghostty")
     }
 
     func testAppName() {
         XCTAssertEqual(TerminalType.terminal.appName, "Terminal")
         XCTAssertEqual(TerminalType.iTerm2.appName, "iTerm")
+        XCTAssertEqual(TerminalType.ghostty.appName, "Ghostty")
     }
 }

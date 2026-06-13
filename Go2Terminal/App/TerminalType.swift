@@ -3,6 +3,7 @@ import Foundation
 enum TerminalType: String, CaseIterable {
     case terminal = "terminal"
     case iTerm2 = "iTerm2"
+    case ghostty = "ghostty"
 
     static let preferencesKey = "terminalType"
 
@@ -12,6 +13,7 @@ enum TerminalType: String, CaseIterable {
         switch self {
         case .terminal: return "Terminal"
         case .iTerm2: return "iTerm2"
+        case .ghostty: return "Ghostty"
         }
     }
 
@@ -19,6 +21,7 @@ enum TerminalType: String, CaseIterable {
         switch self {
         case .terminal: return "Terminal"
         case .iTerm2: return "iTerm"
+        case .ghostty: return "Ghostty"
         }
     }
 

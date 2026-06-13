@@ -13,6 +13,6 @@ struct SettingsView: View {
             .pickerStyle(.radioGroup)
         }
         .formStyle(.grouped)
-        .frame(width: 420, height: 120)
+        .frame(width: 420, height: 160)
     }
 }
