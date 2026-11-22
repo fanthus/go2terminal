@@ -1,6 +1,32 @@
 import AppKit
 
 enum TerminalLauncher {
+    // Opening a directory with `open -a Terminal` can bypass the default profile.
+    // Read Terminal's live default settings for every new window instead.
+    static let terminalAppleScriptSource = """
+        on run argv
+            set directoryPath to item 1 of argv
+            tell application "Terminal"
+                set newTab to do script ("cd -- " & quoted form of directoryPath)
+                set current settings of newTab to default settings
+                activate
+            end tell
+        end run
+        """
+
+    static func launchProcess(for terminal: TerminalType, directoryURL: URL) -> Process {
+        let process = Process()
+        if terminal == .terminal {
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+            // Pass the path as data, keeping quotes and shell metacharacters out of the script.
+            process.arguments = ["-e", terminalAppleScriptSource, "--", directoryURL.path]
+        } else {
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            process.arguments = ["-a", applicationName(for: terminal), directoryURL.path]
+        }
+        return process
+    }
+
     static func applicationName(for terminal: TerminalType) -> String {
         switch terminal {
         case .terminal: return "Terminal"
@@ -56,9 +82,7 @@ enum TerminalLauncher {
         }
 
         let directoryURL = validatedDirectoryURL(for: path)
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-        process.arguments = ["-a", applicationName(for: terminal), directoryURL.path]
+        let process = launchProcess(for: terminal, directoryURL: directoryURL)
 
         do {
             try process.run()
@@ -70,7 +94,7 @@ enum TerminalLauncher {
         }
 
         if process.terminationStatus != 0 {
-            NSLog("TerminalLauncher error: open exited with status %d for path %@", process.terminationStatus, directoryURL.path)
+            NSLog("TerminalLauncher error: launcher exited with status %d for path %@", process.terminationStatus, directoryURL.path)
             showLaunchFailedAlert()
             return false
         }
@@ -98,7 +122,7 @@ enum TerminalLauncher {
     private static func showLaunchFailedAlert() {
         let alert = NSAlert()
         alert.messageText = "Unable to Open Terminal"
-        alert.informativeText = "Go2Terminal could not open the selected terminal application."
+        alert.informativeText = "Go2Terminal could not open the selected terminal application. If prompted, allow Go2Terminal to control Terminal in System Settings → Privacy & Security → Automation."
         alert.alertStyle = .warning
         alert.addButton(withTitle: "OK")
         showAlert(alert)
