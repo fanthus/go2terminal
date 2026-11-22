@@ -10,7 +10,7 @@
 - 支持 `Terminal.app` 和 `iTerm2`
 - 标准 macOS 设置窗口（Option/Shift + 点击，或 `./scripts/open-settings.sh`）
 - Finder 无窗口时自动回退到用户主目录
-- Terminal 新窗口跟随 Terminal 设置中标记为 Default（默认）的主题；更换主题后下次点击即生效
+- Terminal 新窗口跟随 Terminal 设置中“启动时”使用的描述文件，与直接打开 Terminal 保持一致；更换后下次点击即生效
 - iTerm2 未安装时给出可操作提示
 - 自动化权限缺失时引导到系统设置
 
@@ -65,7 +65,7 @@ open -a Go2Terminal --args --settings
 
 ## 权限说明
 
-Go2Terminal 需要读取 Finder 当前目录，并控制 Terminal 创建使用默认主题的新窗口，首次使用可能触发 Automation 权限请求。
+Go2Terminal 需要读取 Finder 当前目录，并控制 Terminal 创建使用启动主题的新窗口，首次使用可能触发 Automation 权限请求。
 
 如被拒绝，可在以下位置开启：
 
@@ -117,7 +117,7 @@ rm -rf .build/xcode Go2Terminal.app dist
 ## 设计要点
 
 - Finder 当前路径解析：`FinderPathResolver`
-- 终端启动：`TerminalLauncher`（Terminal 使用 AppleScript 应用当前默认主题，其他终端使用 `open -a`）
+- 终端启动：`TerminalLauncher`（Terminal 使用 AppleScript 应用当前启动主题，其他终端使用 `open -a`）
 - 终端偏好持久化：`TerminalType` + `@AppStorage`
 - 标准设置界面：SwiftUI `Settings` scene
 - 无 Dock 图标的轻量工具体验：`LSUIElement`

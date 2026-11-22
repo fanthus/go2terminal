@@ -1,14 +1,14 @@
 import AppKit
 
 enum TerminalLauncher {
-    // Opening a directory with `open -a Terminal` can bypass the default profile.
-    // Read Terminal's live default settings for every new window instead.
+    // Match the profile Terminal uses when opened directly. Its startup profile
+    // can differ from the default profile used for subsequent windows.
     static let terminalAppleScriptSource = """
         on run argv
             set directoryPath to item 1 of argv
             tell application "Terminal"
                 set newTab to do script ("cd -- " & quoted form of directoryPath)
-                set current settings of newTab to default settings
+                set current settings of newTab to startup settings
                 activate
             end tell
         end run
